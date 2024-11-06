@@ -1,5 +1,5 @@
 # Utiliza una imagen base de Python
-FROM python:3.7
+FROM python:3.8
 
 # Copia el contenido del directorio "prueba" al directorio "/app" dentro del contenedor
 WORKDIR /usr/src/app
