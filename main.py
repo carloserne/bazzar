@@ -1,3 +1,5 @@
+import datetime
+
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -55,7 +57,6 @@ class ProductWithImages(BaseModel):
 class SaleInput(BaseModel):
     product_id: int
     price: float
-    sale_date: date
 
 # Endpoint para buscar productos
 @app.get("/api/items", response_model=List[Product])
@@ -102,7 +103,7 @@ def add_sale(sale: SaleInput):
     cursor = conn.cursor()
     try:
         cursor.execute("INSERT INTO ventas (producto_id, precio, fecha_venta) VALUES (%s, %s, %s)",
-                       (sale.product_id, sale.price, sale.sale_date))
+                       (sale.product_id, sale.price, datetime.datetime.now()))
         conn.commit()
         result = True
     except:
