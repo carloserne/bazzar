@@ -118,12 +118,22 @@ def add_sale(sale: SaleInput):
 def get_sales():
     conn = mysql.connector.connect(**db_config)
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM ventas")
+
+    # Consulta con JOIN para obtener detalles del producto junto con la información de la venta
+    cursor.execute("""
+        SELECT ventas.id, ventas.precio, ventas.fecha_venta, 
+               productos.title AS product_name, productos.description AS product_description, productos.thumbnail AS product_thumbnail
+        FROM ventas
+        JOIN productos ON ventas.producto_id = productos.id
+    """)
+
     sales = cursor.fetchall()
     conn.close()
+
     if not sales:
         raise HTTPException(status_code=404, detail="No sales found")
     return sales
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8080)
